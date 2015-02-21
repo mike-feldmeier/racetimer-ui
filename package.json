@@ -8,6 +8,6 @@
 		"express": "latest",
 		"stylus": "latest",
 		"jade": "latest",
-		"nib": "latest",
+		"nib": "latest"
 	}
 }
