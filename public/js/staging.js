@@ -53,6 +53,16 @@ $(document).ready(function() {
 				$('#found .time').text(moment(data.gps.time).format('YYYY-MM-DDTHH:mm:ss'));
 				$('#found .position').text('Latitude ' + data.gps.lat + ', Longitude ' + data.gps.lng);
 
+				if(data.profile !== null) {
+					var duration = calc_duration(data.profile.targetSpeed, data.profile.targetDistanceMiles);
+					$('#found .profile-name').text(data.profile.name + ' Profile');
+					$('#found .profile-stats').text(data.profile.targetSpeed + 'MPH over ' + data.profile.targetDistanceMiles + ' miles in ' + moment.duration(duration).format());
+				}
+				else {
+					$('#found .profile-name').text('Profile Unknown');
+					$('#found .profile-stats').text('');
+				}
+
 				$('.library-button').show();
 				$('#start').show();
 				$('#stop').hide();
@@ -75,7 +85,12 @@ $(document).ready(function() {
 			var list = $('.library-button ul');
 			list.empty();
 			profiles.forEach(function(profile) {
-				list.append('<li><a href="/profile/' + profile._id + '">' + profile.name + '</a></li>');
+				list.append('<li><a href="#" data-id="' + profile._id + '">' + profile.name + '</a></li>');
+			});
+
+			$('.library-button .dropdown-menu a').click(function(e) {
+				e.preventDefault();
+				socket.emit('select-profile', { id: $(this).attr('data-id') });
 			});
 		}
 		else {

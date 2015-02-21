@@ -20,6 +20,14 @@ socket.on('data', function(data) {
 		else {
 			$('#debug .starts, #debug .elapsed, #debug .traveled, #debug .average, #debug .instant').text('Unknown');
 		}
+
+		if(data.profile !== null) {
+			var duration = calc_duration(data.profile.targetSpeed, data.profile.targetDistanceMiles);
+			$('#debug .profile-name').text(data.profile.name);
+			$('#debug .profile-duration').text(moment.duration(duration).format());
+			$('#debug .profile-length').text(data.profile.targetDistanceMiles);
+			$('#debug .profile-speed').text(data.profile.targetSpeed);
+		}
 	}
 });
 
@@ -40,6 +48,10 @@ $(document).ready(function() {
 		socket.emit('stop');
 	});
 });
+
+function calc_duration(mph, distance) {
+	return (distance / mph) * 3600000;
+}
 
 moment.duration.fn.format = function() {
     var str = '';
