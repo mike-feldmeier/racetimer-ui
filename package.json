@@ -1,0 +1,13 @@
+{
+	"name": "racetimer-ui",
+	"description": "",
+	"version": "0.0.1",
+	"private": true,
+
+	"dependencies": {
+		"express": "latest",
+		"stylus": "latest",
+		"jade": "latest",
+		"nib": "latest",
+	}
+}

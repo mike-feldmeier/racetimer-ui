@@ -1,0 +1,26 @@
+extends base
+
+block content
+	.main
+		.adjustment
+			.increase
+				i.glyphicon.glyphicon-chevron-up
+			.value 000.000
+			.decrease
+				i.glyphicon.glyphicon-chevron-down
+	.sidebar
+		.average
+			.value 000.000
+			h3 Average Speed
+		.instant
+			.value 000.000
+			h3 Instant Speed
+		.remaining
+			.value 0m 0s
+			h3 Time Remaining
+
+block styles
+	link(rel="stylesheet", href="/css/race.css")
+
+block scripts
+	script(src='/js/race.js')

@@ -1,0 +1,17 @@
+extends base
+
+block content
+	ol.breadcrumb
+		li: a(href='/') Home
+		li: a(href='/library') Library
+
+	#list
+		.list-group
+		.buttons
+			button#add.btn.btn-primary New Profile
+
+block styles
+	link(rel="stylesheet", href="/css/library.css")
+
+block scripts
+	script(src='/js/library.js')

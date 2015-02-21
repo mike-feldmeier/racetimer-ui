@@ -1,0 +1,36 @@
+extends base
+
+block content
+	.wrapper
+		h1 racetimer
+		#found
+			h2 GPS Found
+			table
+				tbody
+					tr
+						td.value.time Unknown
+					tr
+						td.value.position Unknown
+					tr
+						td.value.profile-name Profile Unknown
+		#notFound
+			h2 GPS Not Found
+		#countdown
+			.value Unknown
+		.buttons
+			.btn-group.library-button
+				button#library.btn.btn-primary.btn-lg Library
+				button.btn.btn-primary.btn-lg.dropdown-toggle(data-toggle="dropdown", aria-expanded="false")
+					span.caret
+				ul.dropdown-menu(role="menu")
+					li: a(href="#") No saved profiles
+			.btn-group
+				button#start.btn.btn-success.btn-lg Start
+			.btn-group
+				button#stop.btn.btn-danger.btn-lg Stop
+
+block styles
+	link(rel="stylesheet", href="/css/staging.css")
+
+block scripts
+	script(src='/js/staging.js')

@@ -1,0 +1,97 @@
+doctype html
+
+head
+	title racetimer
+	link(rel="stylesheet", href="/css/thirdparty/bootstrap.min.css")
+	link(rel="stylesheet", href="/css/base.css")
+	block styles
+
+body
+	#content
+		block content
+	#debug
+		table
+			thead
+				tr
+					td(colspan="2") GPS Information
+			tbody
+				tr
+					td.key Connected
+					td.value.connected Unknown
+				tr
+					td.key Time
+					td.value.time Unknown
+				tr
+					td.subkey Accuracy
+					td.value.time-accuracy Unknown
+				tr
+					td.key Latitude
+					td.value.lat Unknown
+				tr
+					td.subkey Accuracy
+					td.value.lat-accuracy Unknown
+				tr
+					td.key Longitude
+					td.value.long Unknown
+				tr
+					td.subkey Accuracy
+					td.value.long-accuracy Unknown
+
+		table
+			thead
+				tr
+					td(colspan="2") Race Information
+			tbody
+				tr
+					td.key Starts
+					td.value.starts Unknown
+				tr
+					td.key Elapsed
+					td.value.elapsed Unknown
+				tr
+					td.key Traveled
+					td.value.traveled Unknown
+				tr
+					td.key Average Speed
+					td.value.average Unknown
+				tr
+					td.key Instant Speed
+					td.value.instant Unknown
+
+		table
+			thead
+				tr
+					td(colspan="2") Profile Information
+			tbody
+				tr
+					td.key Name
+					td.value.profile-name Unknown
+				tr
+					td.key Duration
+					td.value.profile-duration Unknown
+				tr
+					td.key Length
+					td.value.profile-length Unknown
+				tr
+					td.key Target Speed
+					td.value.profile-speed Unknown
+
+		table
+			thead
+				tr
+					td(colspan="2") Analysis
+			tbody
+				tr
+					td.key Adjustment
+					td.value.adjustment Unknown
+
+		.buttons
+			button.btn.btn-primary.start Start
+			button.btn.btn-primary.stop Stop
+
+	script(src="/js/thirdparty/jquery.min.js")
+	script(src="/js/thirdparty/bootstrap.min.js")
+	script(src="/js/thirdparty/socket.io.js")
+	script(src="/js/thirdparty/moment.min.js")
+	script(src="/js/base.js")
+	block scripts
