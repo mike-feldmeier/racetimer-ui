@@ -1,38 +1,60 @@
 extends base
 
-block content
-	.wrapper
-		h1 racetimer
-		#found
-			h2 GPS Found
-			table
-				tbody
-					tr
-						td.value.time Unknown
-					tr
-						td.value.position Unknown
-					tr
-						td.value.profile-name Profile Unknown
-					tr
-						td.value.profile-stats
-		#notFound
-			h2 GPS Not Found
-		#countdown
-			.value Unknown
-		.buttons
-			.btn-group.library-button
-				button#library.btn.btn-primary.btn-lg Library
-				button.btn.btn-primary.btn-lg.dropdown-toggle(data-toggle="dropdown", aria-expanded="false")
-					span.caret
-				ul.dropdown-menu(role="menu")
-					li: a(href="#") No saved profiles
-			.btn-group
-				button#start.btn.btn-success.btn-lg Start
-			.btn-group
-				button#stop.btn.btn-danger.btn-lg Stop
-
 block styles
-	link(rel="stylesheet", href="/css/staging.css")
+  link(rel="stylesheet", href="/css/staging.css")
 
 block scripts
-	script(src='/js/staging.js')
+  script(src="/js/staging.js")
+
+block content
+  h1 racetimer
+  .banner
+    .countdown
+      | 00
+    .ready
+      .title Ready
+      table
+        tr.location
+          td.key Location
+          td.value 0.00000, 0.00000
+        tr.timestamp
+          td.key Timestamp
+          td.value 0
+        tr.target-bracket
+          td.key Bracket
+          td.value 0
+        tr.duration
+          td.key Duration
+          td.value ---
+    .not-ready
+      | GPS Not Found
+  .buttons
+    .btn-group.dropup.speed-button
+      button.btn.btn-primary.dropdown-toggle(type="button", data-toggle="dropdown", aria-expanded="false")
+        | Speed &nbsp;
+        span.caret
+      ul.dropdown-menu(role="menu")
+        li: a(href="/api/target/speed/150") 150 mph
+        li: a(href="/api/target/speed/155") 155 mph
+        li: a(href="/api/target/speed/160") 160 mph
+        li: a(href="/api/target/speed/165") 165 mph
+        li: a(href="/api/target/speed/170") 170 mph
+        li: a(href="/api/target/speed/175") 175 mph
+        li: a(href="/api/target/speed/180") 180 mph
+        li: a(href="/api/target/speed/185") 185 mph
+        li: a(href="/api/target/speed/190") 190 mph
+        li: a(href="/api/target/speed/195") 195 mph
+        li: a(href="/api/target/speed/200") 200 mph
+    .btn-group.dropup.distance-button
+      button.btn.btn-primary.dropdown-toggle(type="button", data-toggle="dropdown", aria-expanded="false")
+        | Distance &nbsp;
+        span.caret
+      ul.dropdown-menu(role="menu")
+        li: a(href="/api/target/distance/75") 75
+        li: a(href="/api/target/distance/80") 80
+        li: a(href="/api/target/distance/85") 85
+        li: a(href="/api/target/distance/90") 90
+        li: a(href="/api/target/distance/95") 95
+        li: a(href="/api/target/distance/100") 100
+    button.start-button.btn.btn-lg.btn-success Start
+    button.stop-button.btn.btn-lg.btn-danger Stop

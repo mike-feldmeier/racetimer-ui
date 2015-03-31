@@ -1,111 +1,91 @@
 $(document).ready(function() {
 
-	$('body').bind('contextmenu', function(e) {
-		e.preventDefault();
-		if($('#found').is(':visible')) {
-			start();
-		}
-		else if($('#countdown').is(':visible')) {
-			stop();
-		}
-	});
+  $('.start-button').click(function(e) {
+    $('.speed-button').hide();
+    $('.distance-button').hide();
+    $('.stop-button').show();
+    $(this).hide();
 
-	$('#start').click(function(e) {
-		e.preventDefault();
-		start();
-	});
+    $.get('/api/start');
+  });
 
-	$('#stop').click(function(e) {
-		e.preventDefault();
-		stop();
-	})
+  $('.stop-button').click(function(e) {
+    $('.speed-button').show();
+    $('.distance-button').show();
+    $('.start-button').show();
+    $(this).hide();
 
-	$('#library').click(function(e) {
-		e.preventDefault();
-		window.location.href = '/library';
-	})
+    $.get('/api/stop');
+  });
 
-	socket.on('data', function(data) {
-		if(data.gps.connected === true) {
-			if(data.race.startsAt) {
-				if(data.race.elapsed >= 0) {
-					window.location.href = '/race';
-				}
-				else {
-					// Countdown
-					$('#found').hide();
-					$('#notFound').hide();
-					$('#countdown').show();
+  $('.stop-button').hide();
 
-					$('#countdown .value').text(data.race.elapsed / -1000);
+  $('.buttons a').click(function(e) {
+    e.preventDefault();
+    $.get(e.currentTarget.href);
+  });
 
-					$('.library-button').hide();
-					$('#start').hide();
-					$('#stop').show();
-				}
-			}
-			else {
-				// GPS Found
-				$('#found').show();
-				$('#notFound').hide();
-				$('#countdown').hide();
+  $(document).bind('contextmenu', function(e) {
+    e.preventDefault();
 
-				$('#found .time').text(moment(data.gps.time).format('YYYY-MM-DDTHH:mm:ss'));
-				$('#found .position').text('Latitude ' + data.gps.lat + ', Longitude ' + data.gps.lng);
+    if($('.start-button').is(':visible')) {
+      $('.start-button').click();
+    }
+    else {
+      $('.stop-button').click();
+    }
 
-				if(data.profile !== null) {
-					var duration = calc_duration(data.profile.targetSpeed, data.profile.targetDistanceMiles);
-					$('#found .profile-name').text(data.profile.name + ' Profile');
-					$('#found .profile-stats').text(data.profile.targetSpeed + 'MPH over ' + data.profile.targetDistanceMiles + ' miles in ' + moment.duration(duration).format());
-				}
-				else {
-					$('#found .profile-name').text('Profile Unknown');
-					$('#found .profile-stats').text('');
-				}
+  });
 
-				$('.library-button').show();
-				$('#start').show();
-				$('#stop').hide();
-			}
-		}
-		else {
-			// GPS Not Found
-			$('#found').hide();
-			$('#notFound').show();
-			$('#countdown').hide();
+  socket.on('state', function(state) {
+    $('.location td.value').text(state.gps.current.lat + ', ' + state.gps.current.lng);
+    $('.timestamp td.value').text(moment(state.gps.current.ts).format('YYYY-MM-DD HH:mm:ss'));
+    $('.target-bracket td.value').text(state.race.target.distance + ' miles @ ' + state.race.target.speed + ' mph');
+    $('.duration td.value').text(formattedDuration(state.race.target.duration));
 
-			$('.library-button').show();
-			$('#start').hide();
-			$('#stop').hide();
-		}
-	});
+    if(state.race.begins > 0) {
+      $('.countdown').css('display', 'flex');
+      $('.ready').hide();
+      $('.not-ready').hide();
 
-	socket.on('profiles', function(profiles) {
-		if(profiles.length > 0) {
-			var list = $('.library-button ul');
-			list.empty();
-			profiles.forEach(function(profile) {
-				list.append('<li><a href="#" data-id="' + profile._id + '">' + profile.name + '</a></li>');
-			});
+      var remaining = (state.gps.current.ts - state.race.begins) / 1000;
 
-			$('.library-button .dropdown-menu a').click(function(e) {
-				e.preventDefault();
-				socket.emit('select-profile', { id: $(this).attr('data-id') });
-			});
-		}
-		else {
-			console.log('no profiles found');
-		}
-	});
-
-	socket.emit('profiles');
+      if(remaining > 0) {
+        window.location.href = '/race';
+      }
+      else {
+        $('.countdown').text(remaining);
+      }
+    }
+    else {
+      $('.countdown').hide();
+      $('.ready').css('display', 'flex');
+      $('.not-ready').hide();
+    }
+  });
 
 });
 
-function start() {
-	socket.emit('start');
-}
+function formattedDuration(ms) {
+  var formatted = '';
+  var d = ms;
 
-function stop() {
-	socket.emit('stop');
+  if(d > 3600000) {
+    var h = Math.floor(d / 3600000);
+    d -= (h * 3600000);
+    formatted += (h + 'h ');
+  }
+
+  if(d > 60000) {
+    var m = Math.floor(d / 60000);
+    d -= (m * 60000);
+    formatted += (m + 'm ');
+  }
+
+  if(d > 0) {
+    var s = (d / 1000);
+    formatted += (numeral(s).format('0.000') + 's ');
+  }
+
+  return formatted;
 }

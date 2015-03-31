@@ -1,63 +1,62 @@
-var socket = io('http://localhost:5000');
+var ONE_SECOND = 1000;
+var ONE_MINUTE = 60 * ONE_SECOND;
+var ONE_HOUR = 60 * ONE_MINUTE;
 
-socket.on('data', function(data) {
-	$('#debug .connected').text(data.gps.connected);
-	if(data.gps.connected) {
-		$('#debug .time').text(moment(data.gps.time).format('YYYY-MM-DDTHH:mm:ss'));
-		$('#debug .time-accuracy').text(data.gps.accuracy.time);
-		$('#debug .lat').text(data.gps.lat);
-		$('#debug .lat-accuracy').text(data.gps.accuracy.latm + ' m');
-		$('#debug .long').text(data.gps.lng);
-		$('#debug .long-accuracy').text(data.gps.accuracy.lngm + ' m');
-
-		if(data.race.startsAt) {
-			$('#debug .starts').text(moment(data.race.startsAt).format('YYYY-MM-DDTHH:mm:ss'));
-			$('#debug .elapsed').text(moment.duration(data.race.elapsed).format());
-			$('#debug .traveled').text(data.race.distance.toFixed(3) + ' mi');
-			$('#debug .average').text(data.race.averageSpeed + ' mph');
-			$('#debug .instant').text(data.race.instantSpeed + ' mph');
-		}
-		else {
-			$('#debug .starts, #debug .elapsed, #debug .traveled, #debug .average, #debug .instant').text('Unknown');
-		}
-
-		if(data.profile !== null) {
-			var duration = calc_duration(data.profile.targetSpeed, data.profile.targetDistanceMiles);
-			$('#debug .profile-name').text(data.profile.name);
-			$('#debug .profile-duration').text(moment.duration(duration).format());
-			$('#debug .profile-length').text(data.profile.targetDistanceMiles);
-			$('#debug .profile-speed').text(data.profile.targetSpeed);
-		}
-	}
-});
+var socket = io('http://localhost:4000');
 
 $(document).ready(function() {
-	$('body').keypress(function(e) {
-		if(e.which === 96) {
-			$('#debug').toggle();
-		}
-	});
+  socket.on('state', function(state) {
+    $('#debug .timestamp .val').text(moment(state.gps.current.ts).format('HH:mm:ss.SSS'));
+    $('#debug .latitude .val').text(state.gps.current.lat);
+    $('#debug .longitude .val').text(state.gps.current.lng);
 
-	$('#debug button.start').click(function(e) {
-		e.preventDefault();
-		socket.emit('start');
-	});
+    $('#debug .timestamp-error .val').text(state.gps.current.err.ts + ' s');
+    $('#debug .latitude-error .val').text(state.gps.current.err.lat + ' m');
+    $('#debug .longitude-error .val').text(state.gps.current.err.lng + ' m');
 
-	$('#debug button.stop').click(function(e) {
-		e.preventDefault();
-		socket.emit('stop');
-	});
+    $('#debug .begins .val').text(moment(state.race.begins).format('HH:mm:ss.SSS'));
+    $('#debug .average .val').text(state.race.average + ' mph');
+    $('#debug .instant .val').text(state.race.instant + ' mph');
+    $('#debug .elapsed-distance .val').text(state.race.elapsed.distance + ' mi');
+    $('#debug .elapsed-duration .val').text(duration(state.race.elapsed.duration));
+    $('#debug .elapsed-count .val').text(state.race.elapsed.count);
+    $('#debug .remaining-distance .val').text(state.race.remaining.distance + ' mi');
+    $('#debug .remaining-duration .val').text(duration(state.race.remaining.duration));
+    $('#debug .remaining-offset .val').text(state.race.remaining.offset + ' mph ');
+  });
+
+  $(document).keypress(function(e) {
+    if(e.which === 96) {
+      $('#debug').toggle();
+    }
+  });
 });
 
-function calc_duration(mph, distance) {
-	return (distance / mph) * 3600000;
+function duration(ms) {
+  var result = '';
+  var x = ms;
+
+  if(ms >= ONE_HOUR || x >= ONE_HOUR) {
+    var h = Math.floor(x / ONE_HOUR);
+    x -= (h * ONE_HOUR);
+    result += (' ' + pad(h) + 'h');
+  }
+
+  if(ms >= ONE_MINUTE || x >= ONE_MINUTE) {
+    var m = Math.floor(x / ONE_MINUTE);
+    x -= (m * ONE_MINUTE);
+    result += (' ' + pad(m) + 'm');
+  }
+
+  if(ms >= ONE_SECOND || x >= ONE_SECOND) {
+    var s = Math.floor(x / ONE_SECOND);
+    x -= (s * ONE_SECOND);
+    result += (' ' + pad(s) + 's');
+  }
+
+  return result;
 }
 
-moment.duration.fn.format = function() {
-    var str = '';
-    if(this.days() !== 0) str = str + Math.floor(this.days()) + 'd ';
-    if(this.hours() !== 0) str = str + Math.floor(this.hours()) + 'h ';
-    if(this.minutes() !== 0) str = str + Math.floor(this.minutes()) + 'm ';
-    str = str + Math.floor(this.seconds()) + 's ';
-    return str;
+function pad(n) {
+  return n < 10 ? '0' + n : n;
 }

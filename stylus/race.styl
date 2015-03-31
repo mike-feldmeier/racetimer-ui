@@ -1,0 +1,49 @@
+#content
+  display flex
+  flex-direction column
+  justify-content space-between
+
+  .message
+    background-color #e74c3c
+    color white
+    display none
+    font-size 4rem
+    height 6rem
+    text-align center
+
+  .subcontent
+    flex-grow 1
+
+    display flex
+    justify-content space-between
+
+    .adjustment
+      font-size 20rem
+      flex-grow 1
+      flex-direction column
+
+      display flex
+      justify-content center
+      align-items center
+
+      .up-indicator, .down-indicator
+        font-size 10rem
+
+    .sidebar
+      width 40%
+
+      display flex
+      flex-direction column
+      justify-content center
+
+      .average, .instant, .time-remaining, .distance-remaining
+        background-color #f0f0f0
+        border 1px solid #e8e8e8
+        margin 1rem
+        text-align center
+
+        .title
+          font-size 5rem
+
+        .val
+          font-size 12rem

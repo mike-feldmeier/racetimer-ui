@@ -1,26 +1,31 @@
 extends base
 
-block content
-	.main
-		.adjustment
-			.increase
-				i.glyphicon.glyphicon-chevron-up
-			.value 000.000
-			.decrease
-				i.glyphicon.glyphicon-chevron-down
-	.sidebar
-		.average
-			.value 000.000
-			h3 Average Speed
-		.instant
-			.value 000.000
-			h3 Instant Speed
-		.remaining
-			.value 0m 0s
-			h3 Time Remaining
-
 block styles
-	link(rel="stylesheet", href="/css/race.css")
+  link(rel="stylesheet", href="/css/race.css")
 
 block scripts
-	script(src='/js/race.js')
+  script(src="/js/race.js")
+
+block content
+  .message BRB again to quit race
+  .subcontent
+    .adjustment
+      .up-indicator
+        i.glyphicon.glyphicon-arrow-up
+      .val 000.000
+      .down-indicator
+        i.glyphicon.glyphicon-arrow-down
+    .sidebar.speed.active
+      .average
+        .title Average
+        .val 000.000
+      .instant
+        .title Instant
+        .val 000.000
+    .sidebar.timing
+      .time-remaining
+        .title Time
+        .val 000.000
+      .distance-remaining
+        .title Distance
+        .val 000.000

@@ -1,13 +1,12 @@
 {
-	"name": "racetimer-ui",
-	"description": "",
-	"version": "0.0.1",
-	"private": true,
+  "name": "racetimer-ui",
+  "version": "1.0.0",
+  "private": true,
 
-	"dependencies": {
-		"express": "latest",
-		"stylus": "latest",
-		"jade": "latest",
-		"nib": "latest"
-	}
+  "dependencies": {
+    "express": "latest",
+    "stylus": "latest",
+    "jade": "latest",
+    "nib": "latest"
+  }
 }
