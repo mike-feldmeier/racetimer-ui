@@ -6,7 +6,9 @@ $(document).ready(function() {
     $('.stop-button').show();
     $(this).hide();
 
-    $.get('/api/start');
+    $.get('/api/start')
+      .done(function() { console.log('Sent start message to engine'); })
+      .fail(function() { console.log('Failed to send start message to engine'); });
   });
 
   $('.stop-button').click(function(e) {
@@ -15,14 +17,18 @@ $(document).ready(function() {
     $('.start-button').show();
     $(this).hide();
 
-    $.get('/api/stop');
+    $.get('/api/stop')
+      .done(function() { console.log('Sent stop message to engine'); })
+      .fail(function() { console.log('Failed to send stop message to engine'); });
   });
 
   $('.stop-button').hide();
 
   $('.buttons a').click(function(e) {
     e.preventDefault();
-    $.get(e.currentTarget.href);
+    $.get(e.currentTarget.href)
+      .done(function() { console.log('Sent [%s] message to engine', e.currentTarget.href); })
+      .fail(function() { console.log('Failed to send [%s] message to engine', e.currentTarget.href); });
   });
 
   $(document).bind('contextmenu', function(e) {

@@ -18,10 +18,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.get('/', function(req, res) { res.render('staging'); });
 app.get('/race', function(req, res) { res.render('race'); });
 
-app.get('/api/start', function(req, res) { call('localhost', 4000, '/start'); });
-app.get('/api/stop', function(req, res) { call('localhost', 4000, '/stop'); });
-app.get('/api/target/speed/:speed', function(req, res) { call('localhost', 4000, '/speed/' + req.params.speed); });
-app.get('/api/target/distance/:distance', function(req, res) { call('localhost', 4000, '/distance/' + req.params.distance); });
+app.get('/api/start', function(req, res) { call('localhost', 4000, '/start', function(s) { res.sendStatus(200); }); });
+app.get('/api/stop', function(req, res) { call('localhost', 4000, '/stop', function(s) { res.sendStatus(200); }); });
+app.get('/api/target/speed/:speed', function(req, res) { call('localhost', 4000, '/speed/' + req.params.speed, function(s) { res.sendStatus(200); }); });
+app.get('/api/target/distance/:distance', function(req, res) { call('localhost', 4000, '/distance/' + req.params.distance, function(s) { res.sendStatus(200); }); });
 
 app.listen(app.get('port'), function() {
 	console.log('Express running on port ' + app.get('port'));
@@ -34,7 +34,8 @@ function compile(s, path) {
     .use(nib());
 }
 
-function call(host, port, path) {
+function call(host, port, path, next) {
+	console.log('making call to %s', path);
 	http.request(
 		{ host: host, port: port, path: path },
 		function(response) {
@@ -43,7 +44,7 @@ function call(host, port, path) {
 				s += chunk;
 			});
 			response.on('end', function() {
-				console.log(s);
+				next(s);
 			});
 		}
 	).end();
